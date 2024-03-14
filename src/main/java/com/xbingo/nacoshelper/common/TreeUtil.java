@@ -18,13 +18,15 @@ public class TreeUtil {
         String group = ymlConfigMap.get(Constants.CONFIG_NACOS_GROUP).toString();
         String extension = ymlConfigMap.get(Constants.CONFIG_NACOS_EXTENSION).toString();
         String namespace = ymlConfigMap.get(Constants.CONFIG_NACOS_NAMESPACE).toString();
+        String profilesActive = ymlConfigMap.get(Constants.PROFILES_ACTIVE).toString();
+
 
         DefaultMutableTreeNode configGroup = new DefaultMutableTreeNode(group);
         root.add(configGroup);
 
-        DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(applicationName + "-" + group + "." + extension );
+        DefaultMutableTreeNode treeNode = new DefaultMutableTreeNode(applicationName + "-" + profilesActive + "." + extension );
         NacosTreeDto configDto = new NacosTreeDto();
-        configDto.setDataId(applicationName + "-" + group + "." + extension);
+        configDto.setDataId(applicationName + "-" + profilesActive + "." + extension);
         configDto.setTenant(namespace);
         configDto.setGroup(group);
         treeNode.setUserObject(configDto);
