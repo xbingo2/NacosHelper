@@ -18,6 +18,10 @@
     <description><![CDATA[
       <p>NacosHelper is a plugin that allows you to view and modify configuration files directly in IDEA without logging into the web version of Nacos.</p>
       <p>NacosHelper是一款可以直接在IDEA中对配置文件进行查看和修改的插件，无需登录到网页版的Nacos中。</p>
+      <p>2024-03-28 bug修复和功能新增</p>
+            <p>修复部分配置文件无法展示修改差异对比bug</p>
+            <p>增加对text/json/xml/html/properties格式配置文件的支持</p>
+            <p>增加配置文件树自动展开第一个分组功能</p>
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.

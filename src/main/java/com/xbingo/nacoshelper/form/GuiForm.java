@@ -9,10 +9,12 @@ import com.intellij.openapi.Disposable;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.editor.Document;
 import com.intellij.openapi.editor.impl.DocumentImpl;
+import com.intellij.openapi.fileTypes.FileTypeManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.WindowWrapper;
 import com.intellij.openapi.util.NlsContexts;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.JBPanel;
 import com.intellij.ui.components.JBScrollPane;
@@ -83,6 +85,12 @@ public class GuiForm implements Disposable {
 				if (null != note && null != note.getUserObject() && 0 == note.getChildCount()) {
 					NacosTreeDto nacosTreeDto = (NacosTreeDto)note.getUserObject();
 					NacosConfigDto nacosConfigDto = NacosUtil.editConfigStr(nacosTreeDto, nacosTokenDto);
+					String fileType = "YAML";
+					String[] parts = nacosTreeDto.getDataId().split("\\.");
+					if (parts.length > 0) {
+						fileType = parts[parts.length - 1].toUpperCase();
+					}
+					ymlEditor.setFileType(FileTypeManager.getInstance().getStdFileType(fileType));
 					ymlEditor.setText(nacosConfigDto.getContent());
 				}
 				else {
@@ -120,8 +128,8 @@ public class GuiForm implements Disposable {
 					public @NotNull List<DiffContent> getContents() {
 						List<DiffContent> virtualFiles = new ArrayList<>();
 
-						Document document1 = new DocumentImpl(NacosUtil.EDIT_CONFIG.getInitContent());
-						Document document2 = new DocumentImpl(ymlEditor.getText());
+						Document document1 = new DocumentImpl(StringUtil.convertLineSeparators(NacosUtil.EDIT_CONFIG.getInitContent()));
+						Document document2 = ymlEditor.getDocument();
 						DocumentContentImpl content1 = new DocumentContentImpl(document1);
 						DocumentContentImpl content2 = new DocumentContentImpl(document2);
 

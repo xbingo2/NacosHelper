@@ -5,6 +5,7 @@ import com.xbingo.nacoshelper.nacos.dto.NacosTreeDto;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreePath;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,5 +53,7 @@ public class TreeUtil {
         }
         DefaultTreeModel rightTreeModel = new DefaultTreeModel(root);
         groupTree.setModel(rightTreeModel);
+
+        groupTree.expandPath(new TreePath(configGroup.getPath()));
     }
 }
