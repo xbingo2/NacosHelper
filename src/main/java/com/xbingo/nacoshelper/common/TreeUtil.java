@@ -37,19 +37,21 @@ public class TreeUtil {
         groupMap.put(group, configGroup);
 
         List<Map<String, Object>> dataIdList = (List)ymlConfigMap.get(Constants.CONFIG_NACOS_EXTENSION_CONFIGS);
-        for (Map<String, Object> map : dataIdList) {
-            if (!groupMap.containsKey(map.get("group").toString())) {
-                DefaultMutableTreeNode extensionGroup = new DefaultMutableTreeNode(map.get("group").toString());
-                root.add(extensionGroup);
-                groupMap.put(map.get("group").toString(), extensionGroup);
+        if (null != dataIdList && !dataIdList.isEmpty()) {
+            for (Map<String, Object> map : dataIdList) {
+                if (!groupMap.containsKey(map.get("group").toString())) {
+                    DefaultMutableTreeNode extensionGroup = new DefaultMutableTreeNode(map.get("group").toString());
+                    root.add(extensionGroup);
+                    groupMap.put(map.get("group").toString(), extensionGroup);
+                }
+                DefaultMutableTreeNode extensionTreeNode = new DefaultMutableTreeNode(map.get("dataId").toString());
+                NacosTreeDto extConfigDto = new NacosTreeDto();
+                extConfigDto.setDataId(map.get("dataId").toString());
+                extConfigDto.setTenant(namespace);
+                extConfigDto.setGroup(map.get("group").toString());
+                extensionTreeNode.setUserObject(extConfigDto);
+                groupMap.get(map.get("group").toString()).add(extensionTreeNode);
             }
-            DefaultMutableTreeNode extensionTreeNode = new DefaultMutableTreeNode(map.get("dataId").toString());
-            NacosTreeDto extConfigDto = new NacosTreeDto();
-            extConfigDto.setDataId(map.get("dataId").toString());
-            extConfigDto.setTenant(namespace);
-            extConfigDto.setGroup(map.get("group").toString());
-            extensionTreeNode.setUserObject(extConfigDto);
-            groupMap.get(map.get("group").toString()).add(extensionTreeNode);
         }
         DefaultTreeModel rightTreeModel = new DefaultTreeModel(root);
         groupTree.setModel(rightTreeModel);

@@ -22,6 +22,9 @@
             <p>修复部分配置文件无法展示修改差异对比bug</p>
             <p>增加对text/json/xml/html/properties格式配置文件的支持</p>
             <p>增加配置文件树自动展开第一个分组功能</p>
+
+      <p>2024-04-12 bug修复</p>
+            <p>修复没有拓展配置时配置文件打开慢和插件无法使用bug</p>
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
