@@ -25,6 +25,8 @@
 
       <p>2024-04-12 bug修复</p>
             <p>修复没有拓展配置时配置文件打开慢和插件无法使用bug</p>
+      <p>2024-05-04 新增功能</p>
+            <p>新增json格式化和复制功能</p>
   ]]></description>
 
     <!-- Product and plugin compatibility requirements.
@@ -35,6 +37,8 @@
          Read more: https://plugins.jetbrains.com/docs/intellij/plugin-extension-points.html -->
     <extensions defaultExtensionNs="com.intellij">
         <fileEditorProvider implementation="com.xbingo.nacoshelper.action.EditorProvider"/>
+        <toolWindow id="jsonParse" icon="/META-INF/toolIcon.svg" anchor="right"
+                    factoryClass="com.xbingo.jsonhelper.action.JsonToolWindow"/>
     </extensions>
     <actions>
     </actions>
