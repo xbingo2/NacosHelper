@@ -4,7 +4,7 @@ import com.intellij.codeInsight.hint.HintManager;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.ScrollType;
 import com.intellij.openapi.editor.ScrollingModel;
-import org.apache.commons.lang.StringUtils;
+import org.apache.http.util.TextUtils;
 import org.jetbrains.annotations.NotNull;
 
 public class EditorHintsNotifier {
@@ -13,7 +13,7 @@ public class EditorHintsNotifier {
     }
 
     private static void notify(@NotNull Editor editor, @NotNull String message, long position, @NotNull Runnable notifier) {
-        if (StringUtils.isBlank(message)) {
+        if (TextUtils.isBlank(message)) {
             return;
         }
 

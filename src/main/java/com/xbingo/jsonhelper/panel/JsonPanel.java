@@ -33,6 +33,10 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.SimpleDateFormat;
+import java.util.Base64;
+import java.util.Date;
+import java.util.regex.Pattern;
 
 public class JsonPanel implements Disposable {
     private static final IElementType TextElementType = new IElementType("TEXT", Language.ANY);
@@ -43,6 +47,10 @@ public class JsonPanel implements Disposable {
     private JButton copyBtn;
     private JPanel leftPanel;
     private JPanel rightPanel;
+    private JButton minifyBtn;
+    private JButton base64EnBtn;
+    private JButton base64DeBtn;
+    private JButton timestampBtn;
 
     private Editor leftEditor;
 
@@ -76,6 +84,89 @@ public class JsonPanel implements Disposable {
             }
         });
 
+        minifyBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String text = leftEditor.getDocument().getText();
+                    String prettyJsonString;
+                    if (TextUtils.isEmpty(text)) {
+                        prettyJsonString = "";
+                    } else {
+                        prettyJsonString = JsonUtils.minifyJson(text);
+                    }
+                    writeToEditor(prettyJsonString);
+                } catch (Exception ex) {
+                    EditorHintsNotifier.notifyError(leftEditor, ex.getMessage(), 0);
+                }
+            }
+        });
+
+        base64EnBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String text = leftEditor.getDocument().getText();
+                    String prettyJsonString;
+                    if (TextUtils.isEmpty(text)) {
+                        prettyJsonString = "";
+                    } else {
+                        prettyJsonString = Base64.getEncoder().encodeToString(text.getBytes());
+                    }
+                    writeToEditor(prettyJsonString);
+                } catch (Exception ex) {
+                    EditorHintsNotifier.notifyError(leftEditor, ex.getMessage(), 0);
+                }
+            }
+        });
+
+        base64DeBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String text = leftEditor.getDocument().getText();
+                    String prettyJsonString;
+                    if (TextUtils.isEmpty(text)) {
+                        prettyJsonString = "";
+                    } else {
+                        byte[] decodedBytes = Base64.getDecoder().decode(text);
+                        prettyJsonString = new String(decodedBytes);
+                    }
+                    writeToEditor(prettyJsonString);
+                } catch (Exception ex) {
+                    EditorHintsNotifier.notifyError(leftEditor, ex.getMessage(), 0);
+                }
+            }
+        });
+
+        timestampBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String text = leftEditor.getDocument().getText();
+                    String prettyJsonString;
+                    if (TextUtils.isEmpty(text)) {
+                        prettyJsonString = "";
+                    } else {
+                        if (isNumeric(text) && text.length() >= 10 && text.length() <= 13) {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date date = new Date(Long.valueOf(text));
+                            prettyJsonString = dateFormat.format(date);
+                        }
+                        else {
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                            Date date = dateFormat.parse(text);
+                            long timestamp = date.getTime();
+                            prettyJsonString = String.valueOf(timestamp);
+                        }
+                    }
+                    writeToEditor(prettyJsonString);
+                } catch (Exception ex) {
+                    EditorHintsNotifier.notifyError(leftEditor, ex.getMessage(), 0);
+                }
+            }
+        });
+
         copyBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -89,6 +180,11 @@ public class JsonPanel implements Disposable {
                 }
             }
         });
+    }
+
+    private static boolean isNumeric(String str) {
+        Pattern pattern = Pattern.compile("[0-9]*");
+        return pattern.matcher(str).matches();
     }
 
     private void writeToEditor(String prettyJsonString) {
