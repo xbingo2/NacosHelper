@@ -1,0 +1,5 @@
+<idea-plugin>
+	<extensions defaultExtensionNs="com.intellij">
+		<annotator language="JAVA" implementationClass="com.xbingo.cronhelper.annotator.JavaCronExpressionAnnotator" />
+	</extensions>
+</idea-plugin>

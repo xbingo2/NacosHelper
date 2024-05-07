@@ -24,8 +24,11 @@ import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiDocumentManager;
 import com.intellij.psi.PsiFile;
 import com.intellij.psi.tree.IElementType;
+import com.xbingo.jsonhelper.common.CronUtil;
 import com.xbingo.jsonhelper.common.EditorHintsNotifier;
 import com.xbingo.jsonhelper.common.JsonUtils;
+import net.redhogs.cronparser.CronExpressionDescriptor;
+import net.redhogs.cronparser.Options;
 import org.apache.http.util.TextUtils;
 
 import javax.swing.*;
@@ -33,9 +36,12 @@ import java.awt.*;
 import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 public class JsonPanel implements Disposable {
@@ -51,13 +57,21 @@ public class JsonPanel implements Disposable {
     private JButton base64EnBtn;
     private JButton base64DeBtn;
     private JButton timestampBtn;
+    private JButton cronBtn;
 
     private Editor leftEditor;
 
     private Editor rightEditor;
 
     private Project mProject;
+
+    private final Options parserOptions;
+
     public JsonPanel(Project project) {
+        this.parserOptions = Options.twentyFourHour();
+        this.parserOptions.setZeroBasedDayOfWeek(true);
+        this.parserOptions.setThrowExceptionOnParseError(false);
+
         mProject = project;
         leftEditor = createEditor();
         leftPanel.add(leftEditor.getComponent(), BorderLayout.CENTER);
@@ -88,6 +102,7 @@ public class JsonPanel implements Disposable {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+
                     String text = leftEditor.getDocument().getText();
                     String prettyJsonString;
                     if (TextUtils.isEmpty(text)) {
@@ -129,7 +144,8 @@ public class JsonPanel implements Disposable {
                     if (TextUtils.isEmpty(text)) {
                         prettyJsonString = "";
                     } else {
-                        byte[] decodedBytes = Base64.getDecoder().decode(text);
+                        String decodedUrl = URLDecoder.decode(text, StandardCharsets.UTF_8);
+                        byte[] decodedBytes = Base64.getDecoder().decode(decodedUrl);
                         prettyJsonString = new String(decodedBytes);
                     }
                     writeToEditor(prettyJsonString);
@@ -158,6 +174,31 @@ public class JsonPanel implements Disposable {
                             Date date = dateFormat.parse(text);
                             long timestamp = date.getTime();
                             prettyJsonString = String.valueOf(timestamp);
+                        }
+                    }
+                    writeToEditor(prettyJsonString);
+                } catch (Exception ex) {
+                    EditorHintsNotifier.notifyError(leftEditor, ex.getMessage(), 0);
+                }
+            }
+        });
+
+        cronBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    String text = leftEditor.getDocument().getText();
+                    String prettyJsonString = "";
+                    if (TextUtils.isEmpty(text)) {
+                        prettyJsonString = "";
+                        EditorHintsNotifier.notifyError(leftEditor, "cron error", 0);
+                    } else {
+                        text = text.trim();
+                        if (CronUtil.isCronExpression(text)) {
+                            prettyJsonString = CronExpressionDescriptor.getDescription(text, parserOptions, Locale.getDefault());
+                        }
+                        else {
+                            EditorHintsNotifier.notifyError(leftEditor, "cron error", 0);
                         }
                     }
                     writeToEditor(prettyJsonString);
