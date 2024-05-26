@@ -25,7 +25,6 @@
     <depends>com.intellij.modules.platform</depends>
 
     <depends optional="true" config-file="annotator/java-features.xml">com.intellij.modules.java</depends>
-    <depends optional="true" config-file="annotator/kotlin-features.xml">org.jetbrains.kotlin</depends>
     <depends optional="true" config-file="annotator/properties-features.xml">com.intellij.properties</depends>
     <depends optional="true" config-file="annotator/yaml-features.xml">org.jetbrains.plugins.yaml</depends>
 
@@ -35,6 +34,9 @@
         <fileEditorProvider implementation="com.xbingo.nacoshelper.action.EditorProvider"/>
         <toolWindow id="NacosHelper" icon="/META-INF/toolIcon.svg" anchor="right"
                     factoryClass="com.xbingo.jsonhelper.action.JsonToolWindow"/>
+
+        <codeInsight.lineMarkerProvider id="JsonLineMarker" language="JAVA"
+                                        implementationClass="com.xbingo.jsonhelper.provider.JsonLineMarker"/>
     </extensions>
     <actions>
     </actions>
