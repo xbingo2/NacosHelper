@@ -48,7 +48,8 @@ public class JsonLineMarker implements LineMarkerProvider {
                             EditorHintsNotifier.notificationAll("Get JsonString Success", NotificationType.INFORMATION);
 
                         },
-                        GutterIconRenderer.Alignment.RIGHT
+                        GutterIconRenderer.Alignment.RIGHT,
+                        ()->"Get JsonString"
                 );
             }
         }
