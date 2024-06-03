@@ -1,17 +1,15 @@
 package com.xbingo.nacoshelper.nacos;
 
-import com.fasterxml.jackson.jr.ob.JSON;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.xbingo.nacoshelper.common.Constants;
 import com.xbingo.nacoshelper.common.HttpUtil;
 import com.xbingo.nacoshelper.nacos.dto.NacosConfigDto;
 import com.xbingo.nacoshelper.nacos.dto.NacosTokenDto;
 import com.xbingo.nacoshelper.nacos.dto.NacosTreeDto;
-import net.minidev.json.JSONUtil;
-import org.apache.http.client.HttpClient;
 
 import java.net.InetAddress;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -98,7 +96,7 @@ public class NacosUtil {
                         + "&accessToken="+ nacosTokenDto.getAccessToken()
                         + "&dataId="+ nacosTreeDto.getDataId()
                         + "&group="+ nacosTreeDto.getGroup()
-                        + "&content="+ content
+                        + "&content="+ URLEncoder.encode(content, StandardCharsets.UTF_8)
                         + "&type="+ nacosConfigDto.getType()
                         + "&id="+ nacosConfigDto.getId()
                         + "&md5="+ nacosConfigDto.getMd5()
